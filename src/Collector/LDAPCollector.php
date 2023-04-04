@@ -1,5 +1,9 @@
 <?php
 
+namespace SimpleSAML\Module\attributecollector\Collector;
+
+use Exception;
+
 /**
  * LDAP Attributes collector
  *
@@ -38,7 +42,7 @@
  *       ),
  * </code>
  */
-class sspmod_attributecollector_Collector_LDAPCollector extends sspmod_attributecollector_SimpleCollector {
+class LDAPCollector {
 
 
 	/**
@@ -142,12 +146,12 @@ class sspmod_attributecollector_Collector_LDAPCollector extends sspmod_attribute
 		$id = $originalAttributes[$uidfield][0];
 
 		// Prepare filter
-		$filter = preg_replace('/:uidfield/', $id, 
+		$filter = preg_replace('/:uidfield/', $id,
 			$this->searchfilter);
 
 		if ($this->attrlist) {
 			$fetch = array_unique(array_values($this->attrlist));
-			$res = @ldap_search($this->ds, $this->basedn, $filter, $fetch);    
+			$res = @ldap_search($this->ds, $this->basedn, $filter, $fetch);
 		}
 		else {
 			$res = @ldap_search($this->ds, $this->basedn, $filter);
@@ -204,7 +208,7 @@ class sspmod_attributecollector_Collector_LDAPCollector extends sspmod_attribute
 
 		if ($this->attrlist) {
 			$fetch = array_unique(array_values($this->attrlist));
-			$res = ldap_search($this->ds, $this->basedn, $filter, $fetch);    
+			$res = ldap_search($this->ds, $this->basedn, $filter, $fetch);
 		}
 		else {
 			$res = ldap_search($this->ds, $this->basedn, $filter);
@@ -270,5 +274,3 @@ class sspmod_attributecollector_Collector_LDAPCollector extends sspmod_attribute
 	}
 
 }
-
-?>

@@ -1,8 +1,21 @@
 {
-    "name": "niif/simplesamlphp-module-attributecollector",
-    "description": "Collect attributes from backend databases like sql or ldap",
+    "name": "sitya/simplesamlphp-module-attributecollector",
+    "description": "Collect attributes from LDAP",
     "type": "simplesamlphp-module",
+    "autoload": {
+        "psr-4": {
+            "SimpleSAML\\Module\\attributecollector\\": "src/"
+        }
+    },
     "require": {
-        "simplesamlphp/composer-module-installer": "~1.0"
+        "php": ">=7.4 || ^8.0",
+        "simplesamlphp/composer-module-installer": "~1.3.2",
+        "simplesamlphp/simplesamlphp": "^2.0.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "simplesamlphp/composer-module-installer": true
+        }
     }
 }

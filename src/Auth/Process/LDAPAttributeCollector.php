@@ -1,30 +1,17 @@
 <?php
 
-/**
- * Filter to collect attributes from diferent sources.
- */
-class sspmod_attributecollector_Auth_Process_AttributeCollector extends SimpleSAML_Auth_ProcessingFilter
+declare(strict_types=1);
+
+namespace SimpleSAML\Module\attributecollector\Auth\Process;
+
+use Exception;
+use SimpleSAML\Module\attributecollector\Collector\LDAPCollector;
+
+class LDAPAttributeCollector extends \SimpleSAML\Auth\ProcessingFilter
 {
     private $existing = 'ignore';
     private $collector = null;
     private $uidfield = null;
-
-
-    /**
-     * Get and initialize the configured collector
-     *
-     * @param array $config  Configuration information about this filter.
-     */
-    private function getCollector($config)
-    {
-        if (!array_key_exists("collector", $config) || !array_key_exists("class", $config["collector"])) {
-            throw new Exception('No collector class specified in configuration');
-        }
-        $collectorConfig = $config["collector"];
-        $collectorClassName = SimpleSAML\Module::resolveClass($collectorConfig['class'], 'Collector', 'sspmod_attributecollector_SimpleCollector');
-        unset($collectorConfig['class']);
-        return new $collectorClassName($collectorConfig);
-    }
 
     /**
      * Initialize this filter.
@@ -36,13 +23,11 @@ class sspmod_attributecollector_Auth_Process_AttributeCollector extends SimpleSA
     {
         parent::__construct($config, $reserved);
 
-        assert('is_array($config)');
-
         if (!array_key_exists("uidfield", $config)) {
             throw new Exception('No uidfield specified in configuration');
         }
         $this->uidfield = $config["uidfield"];
-        $this->collector = $this->getCollector($config);
+        $this->collector = new LDAPCollector($config['collector']);
         if (array_key_exists("existing", $config)) {
             $this->existing = $config["existing"];
         }
@@ -54,7 +39,7 @@ class sspmod_attributecollector_Auth_Process_AttributeCollector extends SimpleSA
      *
      * @param array &$request  The current request
      */
-    public function process(&$request)
+    public function process(array &$request): void
     {
         assert('is_array($request)');
         assert('array_key_exists("Attributes", $request)');
