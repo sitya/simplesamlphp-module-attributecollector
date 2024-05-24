@@ -163,11 +163,13 @@ class LDAPCollector {
 		}
 
 		$entry = @ldap_first_entry($this->ds, $res);
-		$info = @ldap_get_attributes($this->ds, $entry);
+        if ($entry) {
+                $info = @ldap_get_attributes($this->ds, $entry);
 
-		if ($info !== FALSE && is_array($info)) {
-			$retattr = $this->parse_ldap_result($info, $this->attrlist);
-		}
+                if ($info !== FALSE && is_array($info)) {
+                        $retattr = $this->parse_ldap_result($info, $this->attrlist);
+                }
+        }
 
 		return $retattr;
 
