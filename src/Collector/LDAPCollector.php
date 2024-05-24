@@ -143,35 +143,37 @@ class LDAPCollector {
 
 		$retattr = array();
 
-		$id = $originalAttributes[$uidfield][0];
+        if (count($originalAttributes[$uidfield]) > 0) {
+                $id = $originalAttributes[$uidfield][0];
 
-		// Prepare filter
-		$filter = preg_replace('/:uidfield/', $id,
-			$this->searchfilter);
+                // Prepare filter
+                $filter = preg_replace('/:uidfield/', $id,
+                        $this->searchfilter);
 
-		if ($this->attrlist) {
-			$fetch = array_unique(array_values($this->attrlist));
-			$res = @ldap_search($this->ds, $this->basedn, $filter, $fetch);
-		}
-		else {
-			$res = @ldap_search($this->ds, $this->basedn, $filter);
-		}
+                if ($this->attrlist) {
+                        $fetch = array_unique(array_values($this->attrlist));
+                        $res = @ldap_search($this->ds, $this->basedn, $filter, $fetch);
+                }
+                else {
+                        $res = @ldap_search($this->ds, $this->basedn, $filter);
+                }
 
-		if ($res === FALSE) {
-			// Problem with LDAP search
-			throw new Exception('attributecollector:LDAPCollector - LDAP Error when trying to fetch attributes');
-		}
+                if ($res === FALSE) {
+                        // Problem with LDAP search
+                        throw new Exception('attributecollector:LDAPCollector - LDAP Error when trying to fetch attributes');
+                }
 
-		$entry = @ldap_first_entry($this->ds, $res);
-        if ($entry) {
-                $info = @ldap_get_attributes($this->ds, $entry);
+                $entry = @ldap_first_entry($this->ds, $res);
+                if ($entry)
+                {
+                        $info = @ldap_get_attributes($this->ds, $entry);
 
-                if ($info !== FALSE && is_array($info)) {
-                        $retattr = $this->parse_ldap_result($info, $this->attrlist);
+                        if ($info !== FALSE && is_array($info)) {
+                                $retattr = $this->parse_ldap_result($info, $this->attrlist);
+                        }
                 }
         }
-
-		return $retattr;
+        return $retattr;
 
 	}
 
